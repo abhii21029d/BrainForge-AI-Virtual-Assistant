@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+google-genai
+pydantic
+email-validator
+python-dotenv
+elevenlabs
+requests
+bcrypt
+PyJWT

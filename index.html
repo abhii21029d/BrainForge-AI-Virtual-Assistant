@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BrainForge AI — Data Science Academy</title>
+    <meta name="description" content="AI-powered virtual teaching system with 8 specialized Data Science lecturers." />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffb955", "primary-container": "#221300",
+                        "primary-fixed": "#ffddb4", "primary-fixed-dim": "#ffb955",
+                        "on-primary": "#452b00", "on-primary-container": "#b07300",
+                        "on-primary-fixed": "#291800", "on-primary-fixed-variant": "#633f00",
+                        "secondary": "#f6be39", "secondary-container": "#c59300",
+                        "secondary-fixed": "#ffdfa0", "secondary-fixed-dim": "#f6be39",
+                        "on-secondary": "#402d00", "on-secondary-container": "#433000",
+                        "on-secondary-fixed": "#261a00", "on-secondary-fixed-variant": "#5c4300",
+                        "tertiary": "#e5bfa2", "tertiary-container": "#241102",
+                        "tertiary-fixed": "#ffdcc2", "tertiary-fixed-dim": "#e5bfa2",
+                        "on-tertiary": "#432b17", "on-tertiary-container": "#9a7960",
+                        "on-tertiary-fixed": "#2b1705", "on-tertiary-fixed-variant": "#5c412b",
+                        "surface": "#071325", "surface-dim": "#071325",
+                        "surface-bright": "#2e394d", "surface-variant": "#2a3548",
+                        "surface-container": "#142032", "surface-container-low": "#101c2e",
+                        "surface-container-high": "#1f2a3d", "surface-container-highest": "#2a3548",
+                        "surface-container-lowest": "#030e20", "surface-tint": "#ffb955",
+                        "on-surface": "#d7e3fc", "on-surface-variant": "#c5c6cd",
+                        "on-background": "#d7e3fc", "background": "#071325",
+                        "outline": "#8f9097", "outline-variant": "#45474c",
+                        "inverse-surface": "#d7e3fc", "inverse-on-surface": "#253144",
+                        "inverse-primary": "#835500",
+                        "error": "#ffb4ab", "error-container": "#93000a",
+                        "on-error": "#690005", "on-error-container": "#ffdad6",
+                    },
+                    fontFamily: {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "md": "0.375rem", "lg": "0.75rem", "xl": "1rem", "2xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background: #071325;
+            min-height: 100vh;
+            color: #d7e3fc;
+        }
+
+        /* Subtle grid pattern */
+        .bg-grid {
+            background-image:
+                linear-gradient(rgba(255, 185, 85, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 185, 85, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(42, 53, 72, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .glass-card {
+            background: rgba(20, 32, 50, 0.5);
+            backdrop-filter: blur(16px);
+        }
+
+        /* Gold glow effects */
+        .glow-gold {
+            text-shadow: 0 0 30px rgba(255, 185, 85, 0.3);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #ffb955, #c59300);
+            color: #291800;
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 0 30px rgba(255, 185, 85, 0.35);
+        }
+
+        /* Ambient glow */
+        .amber-glow::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(255, 185, 85, 0.12), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .input-scholarly:focus {
+            background: #2a3548;
+            box-shadow: 0 0 0 2px rgba(255, 185, 85, 0.15);
+            outline: none;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 185, 85, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 185, 85, 0.4);
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 185, 85, 0.2) transparent;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Floating math symbols */
+        .math-overlay {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .math-overlay span {
+            position: absolute;
+            color: rgba(143, 144, 151, 0.06);
+            font-family: 'Newsreader', serif;
+            font-size: 2rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body class="font-body bg-grid selection:bg-primary/20 selection:text-primary">
+
+    <div id="app-shell" class="flex flex-col h-screen overflow-hidden relative">
+
+        <!-- ═══ HEADER ═══ -->
+        <header id="main-header" class="hidden sticky top-0 z-50 bg-surface/80 backdrop-blur-xl">
+            <div class="flex justify-between items-center w-full px-8 py-4 mx-auto max-w-[1600px]">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('selection-screen')">
+                    <span class="material-symbols-outlined text-2xl text-primary">neurology</span>
+                    <span class="text-xl font-headline font-bold tracking-tight text-on-surface">BrainForge <span
+                            class="text-primary">AI</span></span>
+                </div>
+                <nav
+                    class="hidden md:flex items-center gap-8 font-body font-semibold text-sm tracking-wide uppercase text-on-surface-variant">
+                    <button id="header-tab-lecturers" class="bg-transparent text-primary hover:text-primary-fixed transition-colors"
+                        onclick="navigateTo('selection-screen')">Lecturers</button>
+                </nav>
+                <div class="flex items-center gap-5 text-on-surface-variant">
+                    <span id="user-greeting"
+                        class="text-sm font-body font-semibold text-primary-fixed-dim hidden md:block"></span>
+                    <button id="header-tab-history" onclick="navigateTo('history-screen')"
+                        class="flex items-center gap-2 bg-transparent hover:text-primary transition-colors active:scale-95"
+                        title="History">
+                        <span class="material-symbols-outlined text-xl">history</span>
+                        <span
+                            class="text-xs font-label font-semibold uppercase hidden md:block tracking-widest">History</span>
+                    </button>
+                    <button onclick="logout()"
+                        class="flex items-center gap-2 hover:text-error transition-colors active:scale-95"
+                        title="Logout">
+                        <span class="material-symbols-outlined text-xl">logout</span>
+                        <span
+                            class="text-xs font-label font-semibold uppercase hidden md:block tracking-widest">Logout</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 w-full h-full overflow-hidden flex relative">
+
+            <!-- ═══ AUTH SCREEN ═══ -->
+            <div id="auth-screen"
+                class="screen w-full h-full justify-center items-center py-10 px-6 absolute z-50 overflow-y-auto no-scrollbar">
+                <!-- Floating math symbols background -->
+                <div class="math-overlay">
+                    <span style="top:8%;left:5%;">∑</span>
+                    <span style="top:15%;right:12%;font-size:3rem;">∫</span>
+                    <span style="top:35%;left:8%;font-size:1.5rem;">λ</span>
+                    <span style="bottom:20%;right:8%;">∂</span>
+                    <span style="top:50%;right:25%;font-size:2.5rem;">π</span>
+                    <span style="bottom:30%;left:15%;font-size:1.8rem;">μ</span>
+                    <span style="top:70%;left:25%;">σ²</span>
+                    <span style="top:20%;left:40%;font-size:1.3rem;">{ }</span>
+                    <span style="bottom:15%;right:30%;font-size:2rem;">Δ</span>
+                    <span style="top:60%;right:10%;font-size:1.6rem;">∇</span>
+                </div>
+                <!-- Ambient glows -->
+                <div
+                    class="absolute top-[-15%] left-[-10%] w-[35%] h-[35%] bg-primary opacity-[0.04] blur-[150px] rounded-full pointer-events-none">
+                </div>
+                <div
+                    class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary opacity-[0.03] blur-[150px] rounded-full pointer-events-none">
+                </div>
+
+                <div class="w-full max-w-md relative z-10 m-auto">
+                    <!-- Branding -->
+                    <div class="text-center mb-12">
+                        <div class="flex items-center justify-center gap-3 mb-5">
+                            <span class="material-symbols-outlined text-5xl text-primary">neurology</span>
+                        </div>
+                        <h1
+                            class="font-headline font-extrabold text-4xl md:text-5xl tracking-tight text-on-surface glow-gold leading-tight">
+                            BrainForge AI</h1>
+                        <p class="font-headline text-primary text-lg mt-2 italic">Data Science Academy</p>
+                        <p class="text-on-surface-variant text-xs mt-3 font-label tracking-[0.25em] uppercase">8 AI
+                            Lecturers · Unlimited Knowledge</p>
+                    </div>
+
+                    <!-- Login Form Card -->
+                    <div class="glass-panel p-10 rounded-xl relative overflow-hidden amber-glow"
+                        style="box-shadow: 0 24px 48px rgba(3, 14, 32, 0.5);">
+                        <form id="auth-form" class="space-y-7" onsubmit="handleAuth(event)">
+                            <!-- Registration Name -->
+                            <div id="reg-name-field" class="space-y-2 hidden">
+                                <label
+                                    class="block text-xs font-label font-semibold tracking-[0.2em] uppercase text-on-surface-variant">Full
+                                    Name</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-lg">person</span>
+                                    <input id="auth-name"
+                                        class="w-full bg-surface-container-high rounded-md py-3.5 pl-11 pr-4 text-on-surface placeholder:text-outline/50 input-scholarly transition-all text-sm font-body border-none"
+                                        placeholder="Your full name" type="text" />
+                                </div>
+                            </div>
+                            <!-- Email -->
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-xs font-label font-semibold tracking-[0.2em] uppercase text-on-surface-variant">Email
+                                    Address</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-lg">mail</span>
+                                    <input id="auth-email" required
+                                        class="w-full bg-surface-container-high rounded-md py-3.5 pl-11 pr-4 text-on-surface placeholder:text-outline/50 input-scholarly transition-all text-sm font-body border-none"
+                                        placeholder="student@brainforge.ai" type="email" />
+                                </div>
+                            </div>
+                            <!-- Password -->
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-xs font-label font-semibold tracking-[0.2em] uppercase text-on-surface-variant">Password</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
+                                    <input id="auth-password" required
+                                        class="w-full bg-surface-container-high rounded-md py-3.5 pl-11 pr-4 text-on-surface placeholder:text-outline/50 input-scholarly transition-all text-sm font-body border-none"
+                                        placeholder="Min. 6 characters" type="password" />
+                                </div>
+                            </div>
+                            <!-- Submit -->
+                            <div class="pt-3">
+                                <button id="auth-submit-btn"
+                                    class="w-full py-3.5 btn-gold font-body font-bold text-base rounded-md transition-all transform active:scale-[0.97] tracking-wide"
+                                    type="submit">
+                                    Sign In
+                                </button>
+                            </div>
+                        </form>
+                        <!-- Toggle -->
+                        <div class="mt-8 text-center pt-6" style="border-top: 1px solid rgba(69,71,76,0.15);">
+                            <p class="text-on-surface-variant text-sm font-body">
+                                <span id="auth-toggle-msg">Don't have an account?</span>
+                                <button type="button" onclick="toggleAuthMode()" id="auth-toggle-btn"
+                                    class="text-primary font-bold ml-1 hover:underline cursor-pointer">Create
+                                    Account</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="absolute bottom-6 left-0 right-0 text-center">
+                    <p class="text-xs font-label text-outline-variant tracking-widest">© 2025 BrainForge AI — <span
+                            class="italic font-headline">Pursue Rigorous Truth.</span></p>
+                </div>
+            </div>
+
+            <!-- ═══ LECTURER SELECTION SCREEN ═══ -->
+            <div id="selection-screen" class="screen flex-col w-full h-full overflow-y-auto no-scrollbar absolute">
+                <main class="flex-1 px-8 py-14 md:px-16 lg:px-24 pb-32 max-w-[1600px] mx-auto w-full">
+                    <header class="mb-16 space-y-5">
+                        <p class="text-xs font-label font-semibold tracking-[0.3em] uppercase text-primary">Neural
+                            Faculty</p>
+                        <h1
+                            class="text-5xl md:text-7xl font-headline font-extrabold tracking-tight text-on-surface leading-[1.1]">
+                            Choose Your<br /><span class="text-primary italic">Lecturer</span>
+                        </h1>
+                        <p class="text-base md:text-lg text-on-surface-variant max-w-2xl font-body leading-relaxed">
+                            Each AI lecturer is a domain expert in Data Science. Pick one, ask anything, and receive
+                            clear, in-depth explanations with code examples.
+                        </p>
+                    </header>
+                    <div id="character-grid"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                </main>
+                <footer class="py-6 text-center">
+                    <p class="text-xs font-label text-outline-variant tracking-widest italic font-headline">Pursue
+                        Rigorous Truth.</p>
+                </footer>
+            </div>
+
+            <div id="history-screen" class="screen flex-col w-full h-full overflow-y-auto no-scrollbar absolute">
+                <main class="flex-1 px-8 py-14 md:px-16 lg:px-24 pb-32 max-w-[1600px] mx-auto w-full">
+                    <header class="mb-12 space-y-5">
+                        <p class="text-xs font-label font-semibold tracking-[0.3em] uppercase text-primary">Saved Sessions</p>
+                        <h1
+                            class="text-4xl md:text-6xl font-headline font-extrabold tracking-tight text-on-surface leading-[1.1]">
+                            Conversation <span class="text-primary italic">History</span>
+                        </h1>
+                        <p class="text-base md:text-lg text-on-surface-variant max-w-2xl font-body leading-relaxed">
+                            Reopen older chats or delete sessions you no longer want to keep.
+                        </p>
+                    </header>
+                    <section>
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <div>
+                                <p class="text-xs font-label font-semibold tracking-[0.25em] uppercase text-primary">All Sessions</p>
+                                <p class="text-sm text-on-surface-variant font-body">Includes your current in-progress session and saved server history.</p>
+                            </div>
+                            <button onclick="loadConversationHistoryList()"
+                                class="px-4 py-2 rounded-md bg-surface-container text-xs font-label font-semibold uppercase tracking-[0.15em] text-on-surface-variant hover:bg-surface-container-high transition-all">
+                                Refresh
+                            </button>
+                        </div>
+                        <div id="conversation-history-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+                    </section>
+                </main>
+                <footer class="py-6 text-center">
+                    <p class="text-xs font-label text-outline-variant tracking-widest italic font-headline">Pursue
+                        Rigorous Truth.</p>
+                </footer>
+            </div>
+
+            <!-- ═══ CHAT SCREEN ═══ -->
+            <div id="chat-screen" class="screen w-full h-full absolute">
+                <!-- Sidebar -->
+                <aside class="hidden md:flex flex-col h-full w-[320px] bg-surface-container-low relative z-20 py-8">
+                    <button onclick="navigateTo('selection-screen')"
+                        class="absolute top-5 left-5 text-outline hover:text-on-surface transition-colors"><span
+                            class="material-symbols-outlined text-xl">arrow_back</span></button>
+                    <div class="px-8 mt-8 flex flex-col items-center gap-3">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden ring-2 ring-primary/30 ring-offset-4 ring-offset-surface-container-low mb-3 transition-all"
+                            id="avatar-ring" style="box-shadow: 0 0 20px rgba(255,185,85,0.15);">
+                            <img id="chat-avatar" class="w-full h-full object-cover">
+                        </div>
+                        <div class="text-center">
+                            <h3 id="chat-char-name"
+                                class="font-headline font-bold text-on-surface text-xl tracking-tight">Lecturer</h3>
+                            <p class="text-xs text-primary tracking-[0.2em] uppercase mt-1 font-label font-semibold"
+                                id="chat-char-trait">Subject</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 px-8 space-y-4">
+                        <!-- Status -->
+                        <div class="p-5 rounded-lg bg-surface-container flex flex-col items-center justify-center">
+                            <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse mb-2.5"
+                                style="box-shadow: 0 0 10px rgba(255,185,85,0.5);"></span>
+                            <p
+                                class="text-[10px] text-on-surface-variant uppercase font-label font-semibold tracking-[0.2em] mb-1">
+                                Status</p>
+                            <p class="text-sm font-body font-bold text-primary">Active & Ready</p>
+                        </div>
+                        <!-- Voice Toggle -->
+                        <button id="voice-toggle" onclick="toggleVoice()"
+                            class="w-full py-3 flex items-center justify-center gap-3 rounded-lg bg-surface-container hover:bg-surface-container-high transition-all group"
+                            title="Voice On (click to mute)">
+                            <span
+                                class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">volume_up</span>
+                            <span id="voice-toggle-label"
+                                class="text-xs font-label font-semibold text-on-surface-variant uppercase tracking-[0.15em]">Mute
+                                Voice</span>
+                        </button>
+                    </div>
+
+                    <div class="mt-auto px-8 space-y-4">
+                        <button onclick="navigateTo('selection-screen')"
+                            class="w-full py-3.5 btn-gold font-body font-bold rounded-md hover:scale-[1.01] active:scale-[0.97] transition-all text-sm tracking-wide">
+                            Switch Lecturer
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Chat Main -->
+                <section class="flex-1 flex flex-col relative h-full bg-surface overflow-hidden">
+                    <!-- Mobile top bar -->
+                    <div class="md:hidden absolute top-4 left-4 right-4 z-50 flex justify-between items-center">
+                        <button onclick="navigateTo('selection-screen')"
+                            class="text-outline hover:text-on-surface p-2 glass-panel rounded-md"><span
+                                class="material-symbols-outlined">arrow_back</span></button>
+                        <div class="hidden sm:flex items-center gap-2 px-3 py-2 glass-panel rounded-md">
+                            <span class="material-symbols-outlined text-primary text-base">graphic_eq</span>
+                            <div class="leading-none text-right">
+                                <div id="voice-provider-badge-mobile" class="text-[10px] font-label font-semibold uppercase tracking-[0.15em] text-primary">ElevenLabs</div>
+                                <div id="voice-provider-badge-detail-mobile" class="text-[9px] font-label text-on-surface-variant">Preferred provider</div>
+                            </div>
+                        </div>
+                        <button id="voice-toggle-mobile" onclick="toggleVoice()"
+                            class="text-primary p-2 glass-panel rounded-md flex items-center gap-2" title="Toggle Voice">
+                            <span class="material-symbols-outlined">volume_up</span>
+                            <span id="voice-toggle-mobile-label"
+                                class="text-[10px] font-label font-semibold uppercase tracking-[0.15em]">Mute</span>
+                        </button>
+                    </div>
+
+                    <div class="hidden md:flex absolute top-4 right-8 z-40 items-center gap-2 px-3 py-2 glass-panel rounded-md">
+                        <span class="material-symbols-outlined text-primary text-base">graphic_eq</span>
+                        <div class="leading-none text-right">
+                            <div id="voice-provider-badge-desktop" class="text-[10px] font-label font-semibold uppercase tracking-[0.15em] text-primary">ElevenLabs</div>
+                            <div id="voice-provider-badge-detail-desktop" class="text-[9px] font-label text-on-surface-variant">Preferred provider</div>
+                        </div>
+                    </div>
+
+                    <div id="chat-history" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 pb-4 md:pb-8">
+                        <div class="flex justify-center mt-4">
+                            <span
+                                class="px-4 py-1.5 rounded-md bg-surface-container text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-label font-semibold text-center">Session
+                                Active<br><span id="clock" class="text-primary font-headline"></span></span>
+                        </div>
+                    </div>
+
+                    <!-- Input bar -->
+                    <div class="w-full shrink-0 relative z-10 p-4 md:p-8 bg-surface/95 backdrop-blur-md">
+                        <div class="max-w-4xl mx-auto glass-panel p-2 rounded-lg flex items-center gap-3 focus-within:ring-1 focus-within:ring-primary/30 transition-all"
+                            style="box-shadow: 0 -10px 40px rgba(3,14,32,0.4);">
+                            <input id="user-input"
+                                class="flex-1 bg-transparent border-none focus:ring-0 outline-none text-on-surface placeholder-on-surface-variant/40 py-3.5 px-5 font-body text-base"
+                                placeholder="Ask your lecturer anything..." type="text" onkeypress="handleKey(event)" />
+                            <div class="flex items-center gap-2 pr-2">
+                                <button id="mic-btn" onclick="startListening()"
+                                    class="relative p-2.5 rounded-md bg-surface-container-high group w-12 h-12 flex items-center justify-center outline-none border-none hover:bg-surface-container-highest hover:scale-105 active:scale-95 transition-all">
+                                    <span class="material-symbols-outlined text-on-surface-variant text-xl">mic</span>
+                                </button>
+                                <button id="send-btn" onclick="sendQuery()"
+                                    class="p-2.5 w-12 h-12 flex items-center justify-center btn-gold rounded-md outline-none border-none hover:scale-105 active:scale-95 transition-all">
+                                    <span class="material-symbols-outlined text-xl">send</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
