@@ -111,7 +111,7 @@ const lecturers = [
 ];
 
 // ─── Auth ────────────────────────────────────────────
-const API = "http://localhost:8000";
+const API = "https://brainforge-ai-virtual-assistant.onrender.com";
 let authToken = localStorage.getItem('authToken');
 let currentUserEmail = localStorage.getItem('currentUserEmail') || '';
 let currentConversationId = null;
