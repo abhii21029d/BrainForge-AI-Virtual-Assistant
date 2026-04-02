@@ -10,10 +10,15 @@ from fastapi.responses import StreamingResponse
 import requests
 import bcrypt
 import jwt
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent
+DB_PATH = PROJECT_ROOT / "brainforge.db"
+
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(PROJECT_ROOT / ".env")
 
 app = FastAPI(title="BrainForge AI — Virtual Teaching System")
 
@@ -93,7 +98,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
 
 # ─── SQLite Database ──────────────────────────────────
 def init_db():
-    conn = sqlite3.connect("brainforge.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -131,7 +136,7 @@ def conversation_title(character: str, messages: list[ConversationMessage]) -> s
     return compact[:60] + ("..." if len(compact) > 60 else "")
 
 def get_conversation_for_user(conversation_id: int, user_email: str):
-    conn = sqlite3.connect("brainforge.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute(
         "SELECT id, user_email, character, title, created_at, updated_at FROM conversations WHERE id = ? AND user_email = ?",
@@ -373,7 +378,7 @@ Help students develop strong statistical thinking for data science.""",
 # ─── Auth Endpoints ───────────────────────────────────
 @app.post("/register")
 async def register(req: RegisterRequest):
-    conn = sqlite3.connect("brainforge.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     
     # Check if email already exists
@@ -395,7 +400,7 @@ async def register(req: RegisterRequest):
 
 @app.post("/login")
 async def login(req: LoginRequest):
-    conn = sqlite3.connect("brainforge.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     
     c.execute("SELECT name, password_hash FROM users WHERE email = ?", (req.email.lower(),))
@@ -418,7 +423,7 @@ async def get_me(user = Depends(verify_token)):
 
 @app.get("/conversations")
 async def list_conversations(user = Depends(verify_token)):
-    conn = sqlite3.connect("brainforge.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute(
         """SELECT c.id, c.character, c.title, c.created_at, c.updated_at,
@@ -450,7 +455,7 @@ async def get_conversation(conversation_id: int, user = Depends(verify_token)):
     if not conversation:
         raise HTTPException(status_code=404, detail="Conversation not found")
 
-    conn = sqlite3.connect("brainforge.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute(
         "SELECT role, text, created_at FROM conversation_messages WHERE conversation_id = ? ORDER BY id ASC",
@@ -476,7 +481,7 @@ async def delete_conversation(conversation_id: int, user = Depends(verify_token)
     if not conversation:
         raise HTTPException(status_code=404, detail="Conversation not found")
 
-    conn = sqlite3.connect("brainforge.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("DELETE FROM conversation_messages WHERE conversation_id = ?", (conversation_id,))
     c.execute("DELETE FROM conversations WHERE id = ? AND user_email = ?", (conversation_id, user["sub"]))
@@ -502,7 +507,7 @@ async def save_conversation(req: ConversationSaveRequest, user = Depends(verify_
         raise HTTPException(status_code=400, detail="Conversation messages are required")
 
     title = conversation_title(req.character, cleaned_messages)
-    conn = sqlite3.connect("brainforge.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     if req.conversation_id is not None:

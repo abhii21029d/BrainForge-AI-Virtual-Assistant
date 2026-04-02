@@ -58,7 +58,7 @@ cd shitt
 python -m venv venv
 venv\Scripts\activate        # Windows
 # source venv/bin/activate   # macOS/Linux
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
 ### 2. Configure API Keys
@@ -76,22 +76,25 @@ ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 ### 3. Run
 
 ```bash
-uvicorn main:app --port 8000 --reload
+uvicorn backend.main:app --port 8000 --reload
 ```
 
-Open `index.html` in your browser (or serve it via any local server).
+Open `frontend/index.html` in your browser (or serve the `frontend/` folder via any local server).
 
 ---
 
 ## Project Structure
 
 ```
-├── .env                # API keys (not committed)
-├── index.html          # Frontend — UI shell, screens, Tailwind config
-├── script.js           # Frontend — Lecturer logic, chat engine, voice toggle
-├── main.py             # Backend — FastAPI, Gemini prompts, TTS streaming
-├── requirements.txt    # Python dependencies
-└── README.md           # This file
+├── .env                       # API keys (not committed)
+├── backend/
+│   ├── main.py               # Backend — FastAPI, Gemini prompts, TTS streaming
+│   ├── requirements.txt      # Python dependencies
+│   └── test_app.py           # Backend tests
+├── frontend/
+│   ├── index.html            # Frontend — UI shell, screens, Tailwind config
+│   └── script.js             # Frontend — Lecturer logic, chat engine, voice toggle
+└── README.md                 # This file
 ```
 
 ---
